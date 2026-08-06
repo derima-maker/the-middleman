@@ -5,46 +5,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculator via Marketplace</title>
     <style>
-        body { font-family: -apple-system, sans-serif; background: #f5f5f7; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .container { background: white; border-radius: 24px; padding: 30px; width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        input { width: 100%; padding: 12px; font-size: 18px; border: 1px solid #d2d2d7; border-radius: 12px; margin-bottom: 15px; text-align: center; }
-        button { width: 100%; padding: 12px; font-size: 18px; font-weight: 600; background: #007aff; color: white; border: none; border-radius: 12px; cursor: pointer; }
-        .result { margin-top: 20px; font-size: 24px; font-weight: 700; padding: 12px; border-radius: 12px; background: #f2f2f7; min-height: 40px; }
+        body {
+            font-family: -apple-system, sans-serif;
+            background: #f5f5f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+            width: 320px;
+            text-align: center;
+        }
+        h2 { margin-bottom: 20px; color: #1d1d1f; }
+        input {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            border: 1px solid #d2d2d7;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            background: #007aff;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+        button:hover { background: #005bbf; }
+        .result {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: 700;
+            background: #f2f2f7;
+            padding: 12px;
+            border-radius: 12px;
+            min-height: 40px;
+        }
         .error { color: #ff3b30; }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>🔢 Calculator</h2>
-        <input type="text" id="calcInput" placeholder="2+2">
+        <input type="text" id="calcInput" placeholder="e.g. 2+2">
         <button onclick="calculate()">Calculate</button>
         <div class="result" id="result"></div>
     </div>
 
     <script>
-        const PRODUCT_ID = 8;   // ⚠️ CHANGE TO YOUR REAL PRODUCT ID
+        const PRODUCT_ID = 8;   // Calculator product ID
         const API_KEY = 'mp_ugN0ln8_6EUm0tkhBVcvkZ3pmV_8yPZKLvnsc_6-Nq0';
         const BASE = 'https://api-marketplace-backend-1.onrender.com';
 
         async function calculate() {
-            const expr = document.getElementById('calcInput').value.trim();
+            const input = document.getElementById('calcInput');
+            let expr = input.value.trim();
+            if (!expr) {
+                expr = '2+2';   // fallback to show something on load
+                input.value = expr;
+            }
+
             const res = document.getElementById('result');
             res.textContent = '...';
             res.className = 'result';
 
-            // Use api_key as query param – no preflight CORS needed
             const url = `${BASE}/gateway/${PRODUCT_ID}/?calc=${encodeURIComponent(expr)}&api_key=${API_KEY}`;
+            console.log('Calling:', url);
 
             try {
                 const resp = await fetch(url);
-                if (!resp.ok) {
-                    const err = await resp.json();
-                    res.textContent = err.error || 'Gateway error';
-                    res.classList.add('error');
-                    return;
-                }
                 const data = await resp.json();
-                res.textContent = data.result;
+                if (data.error) {
+                    res.textContent = data.error;
+                    res.classList.add('error');
+                } else if (data.result !== undefined) {
+                    res.textContent = data.result;
+                } else {
+                    res.textContent = 'Unexpected response';
+                    res.classList.add('error');
+                }
             } catch (e) {
                 res.textContent = 'Network error – check console';
                 res.classList.add('error');
@@ -52,6 +103,7 @@
             }
         }
 
+        // Auto-calculate on page load (shows default 2+2 result)
         window.onload = calculate;
     </script>
 </body>
