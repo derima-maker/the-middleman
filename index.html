@@ -1,110 +1,1891 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculator via Marketplace</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API Marketplace</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <!-- Google Fonts (Roboto) -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
     <style>
-        body {
-            font-family: -apple-system, sans-serif;
-            background: #f5f5f7;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+        /* ───────────── RESET & BASE ───────────── */
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .container {
-            background: white;
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            padding: 30px;
-            width: 320px;
-            text-align: center;
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #f1f3f4;
+            color: #202124;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
-        h2 { margin-bottom: 20px; color: #1d1d1f; }
-        input {
-            width: 100%;
-            padding: 12px;
-            font-size: 18px;
-            border: 1px solid #d2d2d7;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            text-align: center;
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
         }
-        button {
-            width: 100%;
-            padding: 12px;
-            font-size: 18px;
-            font-weight: 600;
-            background: #007aff;
-            color: white;
-            border: none;
-            border-radius: 12px;
+        ::-webkit-scrollbar-track {
+            background: #e8eaed;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #bdc1c6;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9aa0a6;
+        }
+
+        /* ───────────── TOP NAV ───────────── */
+        .top-nav {
+            background: #ffffff;
+            padding: 8px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border-bottom: 1px solid #e8eaed;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .nav-left .menu-icon {
+            font-size: 22px;
+            color: #5f6368;
+            cursor: pointer;
+            padding: 6px 4px;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+        .nav-left .menu-icon:hover {
+            background: #f1f3f4;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+            color: #202124;
             cursor: pointer;
         }
-        button:hover { background: #005bbf; }
-        .result {
-            margin-top: 20px;
-            font-size: 24px;
-            font-weight: 700;
-            background: #f2f2f7;
-            padding: 12px;
-            border-radius: 12px;
-            min-height: 40px;
+        .logo .brand-icon {
+            font-size: 28px;
+            color: #4285f4;
+            position: relative;
         }
-        .error { color: #ff3b30; }
+        .logo .brand-icon .fa-cloud-upload-alt {
+            color: #4285f4;
+        }
+        .logo .brand-icon .fa-key {
+            color: #34a853;
+            font-size: 16px;
+            margin-left: -10px;
+        }
+        .logo span {
+            font-size: 22px;
+            font-weight: 500;
+            letter-spacing: -0.5px;
+            color: #202124;
+        }
+        .logo .store {
+            font-weight: 300;
+            color: #5f6368;
+        }
+
+        .search-wrapper {
+            flex: 1;
+            min-width: 180px;
+            max-width: 720px;
+            position: relative;
+        }
+        .search-wrapper .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #5f6368;
+            font-size: 18px;
+        }
+        .search-wrapper input {
+            width: 100%;
+            padding: 10px 16px 10px 48px;
+            border: none;
+            border-radius: 24px;
+            background: #f1f3f4;
+            font-size: 15px;
+            outline: none;
+            transition: background 0.2s, box-shadow 0.2s;
+            color: #202124;
+            font-family: 'Roboto', sans-serif;
+        }
+        .search-wrapper input::placeholder {
+            color: #5f6368;
+            font-weight: 400;
+        }
+        .search-wrapper input:focus {
+            background: #ffffff;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.15);
+        }
+        .search-wrapper .mic-icon {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #4285f4;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+        .nav-right .icon-btn {
+            font-size: 22px;
+            color: #5f6368;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 50%;
+            transition: background 0.2s;
+            background: transparent;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-right .icon-btn:hover {
+            background: #f1f3f4;
+        }
+        .nav-right .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #4285f4;
+            background: linear-gradient(135deg, #4285f4, #34a853);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 500;
+            font-size: 16px;
+            cursor: pointer;
+            position: relative;
+        }
+        .nav-right .avatar .dropdown {
+            display: none;
+            position: absolute;
+            top: 45px;
+            right: 0;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            min-width: 160px;
+            padding: 8px 0;
+            border: 1px solid #e8eaed;
+            z-index: 200;
+        }
+        .nav-right .avatar .dropdown a {
+            display: block;
+            padding: 10px 18px;
+            font-size: 14px;
+            color: #202124;
+            text-decoration: none;
+            transition: background 0.15s;
+            cursor: pointer;
+        }
+        .nav-right .avatar .dropdown a:hover {
+            background: #f1f3f4;
+        }
+        .nav-right .avatar .dropdown a i {
+            margin-right: 10px;
+            width: 18px;
+            color: #5f6368;
+        }
+        .nav-right .avatar.active .dropdown {
+            display: block;
+        }
+
+        /* ───────────── SECONDARY TABS ───────────── */
+        .secondary-tabs {
+            background: #ffffff;
+            padding: 0 24px;
+            border-bottom: 1px solid #e8eaed;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow-x: auto;
+            flex-wrap: nowrap;
+            scrollbar-width: none;
+        }
+        .secondary-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        .secondary-tabs .tab {
+            padding: 14px 16px 12px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #5f6368;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: color 0.2s, border-color 0.2s;
+            white-space: nowrap;
+            background: transparent;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            font-family: 'Roboto', sans-serif;
+        }
+        .secondary-tabs .tab:hover {
+            color: #202124;
+        }
+        .secondary-tabs .tab.active {
+            color: #1a73e8;
+            border-bottom-color: #1a73e8;
+        }
+
+        /* ───────────── MAIN CONTENT ───────────── */
+        .main-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 20px 24px 24px 24px;
+            flex: 1;
+        }
+
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 500;
+            color: #202124;
+            margin-top: 28px;
+            margin-bottom: 4px;
+        }
+        .section-sub {
+            font-size: 14px;
+            color: #5f6368;
+            margin-bottom: 16px;
+        }
+
+        .scroll-list {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            scrollbar-width: thin;
+            scrollbar-color: #bdc1c6 transparent;
+        }
+        .scroll-list::-webkit-scrollbar {
+            height: 4px;
+        }
+        .scroll-list::-webkit-scrollbar-thumb {
+            background: #bdc1c6;
+            border-radius: 8px;
+        }
+        .scroll-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+            margin-top: 8px;
+        }
+
+        .app-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 16px 14px 14px 14px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            transition: box-shadow 0.2s, transform 0.15s;
+            cursor: pointer;
+            border: 1px solid #e8eaed;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+        }
+        .app-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+        }
+        .app-card .app-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #fff;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+        .app-card .app-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #202124;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            max-height: 36px;
+        }
+        .app-card .app-desc {
+            font-size: 12px;
+            color: #5f6368;
+            margin-top: 2px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            max-height: 32px;
+            line-height: 1.4;
+        }
+        .app-card .app-meta {
+            font-size: 12px;
+            color: #5f6368;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .app-card .app-meta .badge {
+            background: #e8eaed;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+        .ad-badge {
+            font-size: 10px;
+            font-weight: 500;
+            color: #5f6368;
+            background: #f1f3f4;
+            padding: 2px 8px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+
+        /* Detail Page */
+        .detail-container {
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border: 1px solid #e8eaed;
+        }
+        .detail-container .back-btn {
+            background: transparent;
+            border: none;
+            color: #1a73e8;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 0 0 16px 0;
+            font-family: 'Roboto', sans-serif;
+        }
+        .detail-container .back-btn i {
+            margin-right: 6px;
+        }
+        .detail-header {
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        .detail-header .big-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .detail-header .info h2 {
+            font-size: 28px;
+            font-weight: 500;
+        }
+        .detail-header .info .category {
+            color: #5f6368;
+            font-size: 14px;
+        }
+        .detail-header .info .price {
+            margin-top: 8px;
+            font-weight: 500;
+            color: #1a73e8;
+        }
+        .detail-body {
+            border-top: 1px solid #e8eaed;
+            padding-top: 20px;
+            margin-top: 10px;
+        }
+        .detail-body p {
+            line-height: 1.6;
+            color: #3c4043;
+            margin-bottom: 16px;
+        }
+        .detail-body .doc-link {
+            color: #1a73e8;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .detail-body .doc-link:hover {
+            text-decoration: underline;
+        }
+        .request-btn {
+            background: #1a73e8;
+            color: #fff;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 24px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-family: 'Roboto', sans-serif;
+            margin-top: 16px;
+        }
+        .request-btn:hover {
+            background: #1557b0;
+        }
+        .request-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Dashboard / Forms */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+        @media (max-width: 820px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .form-card {
+            background: #fff;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #e8eaed;
+        }
+        .form-card h3 {
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #5f6368;
+            margin-bottom: 4px;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Roboto', sans-serif;
+            transition: border 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #1a73e8;
+        }
+        .btn-primary {
+            background: #1a73e8;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 24px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-family: 'Roboto', sans-serif;
+        }
+        .btn-primary:hover {
+            background: #1557b0;
+        }
+        .btn-danger {
+            background: #d93025;
+            color: #fff;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-family: 'Roboto', sans-serif;
+        }
+        .btn-danger:hover {
+            background: #b3261e;
+        }
+        .my-apis-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .my-api-item {
+            background: #fff;
+            padding: 14px 18px;
+            border-radius: 8px;
+            border: 1px solid #e8eaed;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .my-api-item .info .name {
+            font-weight: 500;
+        }
+        .my-api-item .info .desc {
+            font-size: 13px;
+            color: #5f6368;
+        }
+
+        /* Library (My Keys) */
+        .key-item {
+            background: #fff;
+            padding: 16px 20px;
+            border-radius: 8px;
+            border: 1px solid #e8eaed;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        .key-item .key-value {
+            background: #f1f3f4;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-family: monospace;
+            font-size: 14px;
+            color: #202124;
+        }
+        .key-item .copy-btn {
+            background: transparent;
+            border: none;
+            color: #1a73e8;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .key-item .copy-btn:hover {
+            color: #1557b0;
+        }
+
+        /* Login Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-box {
+            background: #fff;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        .modal-box .close-modal {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #5f6368;
+            background: none;
+            border: none;
+        }
+        .modal-box h2 {
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .modal-box .sub {
+            color: #5f6368;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .modal-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #dadce0;
+        }
+        .modal-tabs button {
+            padding: 10px 16px;
+            background: transparent;
+            border: none;
+            font-weight: 500;
+            color: #5f6368;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-size: 14px;
+            font-family: 'Roboto', sans-serif;
+        }
+        .modal-tabs button.active {
+            color: #1a73e8;
+            border-bottom-color: #1a73e8;
+        }
+        .modal-form .form-group {
+            margin-bottom: 16px;
+        }
+        .modal-form .form-group label {
+            font-size: 13px;
+            color: #5f6368;
+            font-weight: 500;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .modal-form .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .modal-form .form-group input:focus {
+            outline: none;
+            border-color: #1a73e8;
+        }
+        .modal-form .btn-primary {
+            width: 100%;
+            padding: 12px;
+            border-radius: 24px;
+            margin-top: 8px;
+        }
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #323232;
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 9999;
+            display: none;
+            max-width: 90%;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .toast.show {
+            display: block;
+            animation: fadeInUp 0.3s ease;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* ───────────── FOOTER ───────────── */
+        .footer {
+            background: #ffffff;
+            border-top: 1px solid #e8eaed;
+            padding: 20px 24px 16px 24px;
+            margin-top: 16px;
+        }
+        .footer-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 13px;
+            color: #5f6368;
+        }
+        .footer-inner .footer-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .footer-inner .footer-links a {
+            color: #5f6368;
+            text-decoration: none;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+        .footer-inner .footer-links a:hover {
+            color: #1a73e8;
+        }
+        .footer-inner .footer-country {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .footer-inner .footer-country i {
+            font-size: 16px;
+            color: #34a853;
+        }
+
+        /* ───────────── RESPONSIVE ───────────── */
+        @media (max-width: 820px) {
+            .top-nav {
+                padding: 8px 16px;
+                gap: 10px;
+            }
+            .search-wrapper {
+                min-width: 120px;
+                order: 3;
+                flex-basis: 100%;
+            }
+            .nav-left .menu-icon {
+                font-size: 20px;
+            }
+            .logo span {
+                font-size: 18px;
+            }
+            .secondary-tabs {
+                padding: 0 12px;
+            }
+            .secondary-tabs .tab {
+                font-size: 13px;
+                padding: 12px 12px 10px 12px;
+            }
+            .main-container {
+                padding: 16px 12px 24px 12px;
+            }
+            .app-card {
+                padding: 12px 10px 10px 10px;
+            }
+            .app-card .app-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+            .app-card .app-name {
+                font-size: 13px;
+            }
+            .app-card .app-desc {
+                font-size: 11px;
+            }
+            .section-title {
+                font-size: 18px;
+            }
+            .app-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            .detail-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .detail-container {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .top-nav {
+                padding: 6px 10px;
+                gap: 6px;
+            }
+            .logo span {
+                font-size: 16px;
+            }
+            .logo .brand-icon {
+                font-size: 22px;
+            }
+            .nav-right .icon-btn {
+                font-size: 18px;
+                padding: 4px;
+            }
+            .nav-right .avatar {
+                width: 30px;
+                height: 30px;
+                font-size: 13px;
+            }
+            .search-wrapper input {
+                padding: 8px 12px 8px 40px;
+                font-size: 14px;
+            }
+            .search-wrapper .search-icon {
+                left: 12px;
+                font-size: 16px;
+            }
+            .search-wrapper .mic-icon {
+                right: 10px;
+                font-size: 16px;
+            }
+            .secondary-tabs .tab {
+                font-size: 12px;
+                padding: 10px 8px 8px 8px;
+            }
+            .app-card {
+                padding: 10px 8px 8px 8px;
+            }
+            .app-card .app-icon {
+                width: 42px;
+                height: 42px;
+                font-size: 18px;
+                border-radius: 10px;
+            }
+            .app-card .app-name {
+                font-size: 12px;
+                max-height: 30px;
+            }
+            .app-card .app-desc {
+                font-size: 10px;
+                max-height: 28px;
+            }
+            .section-title {
+                font-size: 16px;
+            }
+            .section-sub {
+                font-size: 12px;
+            }
+            .app-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 10px;
+            }
+            .footer-inner {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                font-size: 12px;
+            }
+            .footer-inner .footer-links {
+                justify-content: center;
+                gap: 12px;
+            }
+            .modal-box {
+                padding: 24px;
+            }
+            .detail-header .big-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 28px;
+            }
+        }
+
+        /* ───────────── DARK MODE ───────────── */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #202124;
+                color: #e8eaed;
+            }
+            .top-nav,
+            .secondary-tabs,
+            .app-card,
+            .footer,
+            .detail-container,
+            .form-card,
+            .my-api-item,
+            .key-item,
+            .modal-box {
+                background: #2d2e30;
+                border-color: #3c3f41;
+            }
+            .top-nav {
+                border-bottom-color: #3c3f41;
+            }
+            .secondary-tabs {
+                border-bottom-color: #3c3f41;
+            }
+            .search-wrapper input {
+                background: #3c3f41;
+                color: #e8eaed;
+            }
+            .search-wrapper input::placeholder {
+                color: #9aa0a6;
+            }
+            .search-wrapper input:focus {
+                background: #3c3f41;
+                box-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+            }
+            .nav-left .menu-icon,
+            .nav-right .icon-btn,
+            .search-wrapper .search-icon,
+            .search-wrapper .mic-icon {
+                color: #bdc1c6;
+            }
+            .logo span {
+                color: #e8eaed;
+            }
+            .logo .store {
+                color: #9aa0a6;
+            }
+            .secondary-tabs .tab {
+                color: #9aa0a6;
+            }
+            .secondary-tabs .tab:hover {
+                color: #e8eaed;
+            }
+            .secondary-tabs .tab.active {
+                color: #8ab4f8;
+                border-bottom-color: #8ab4f8;
+            }
+            .app-card {
+                border-color: #3c3f41;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            }
+            .app-card:hover {
+                border-color: #5f6368;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            }
+            .app-card .app-name {
+                color: #e8eaed;
+            }
+            .app-card .app-desc,
+            .app-card .app-meta,
+            .detail-header .info .category,
+            .detail-body p {
+                color: #9aa0a6;
+            }
+            .section-title {
+                color: #e8eaed;
+            }
+            .section-sub {
+                color: #9aa0a6;
+            }
+            .ad-badge {
+                background: #3c3f41;
+                color: #bdc1c6;
+            }
+            .footer {
+                border-top-color: #3c3f41;
+            }
+            .footer-inner {
+                color: #9aa0a6;
+            }
+            .footer-inner .footer-links a {
+                color: #9aa0a6;
+            }
+            .footer-inner .footer-links a:hover {
+                color: #8ab4f8;
+            }
+            ::-webkit-scrollbar-track {
+                background: #2d2e30;
+            }
+            ::-webkit-scrollbar-thumb {
+                background: #5f6368;
+            }
+            .detail-body {
+                border-top-color: #3c3f41;
+            }
+            .form-group input, .form-group select, .form-group textarea {
+                background: #3c3f41;
+                border-color: #5f6368;
+                color: #e8eaed;
+            }
+            .form-group label {
+                color: #9aa0a6;
+            }
+            .my-api-item, .key-item {
+                border-color: #3c3f41;
+            }
+            .key-item .key-value {
+                background: #3c3f41;
+                color: #e8eaed;
+            }
+            .modal-tabs {
+                border-bottom-color: #3c3f41;
+            }
+            .modal-tabs button {
+                color: #9aa0a6;
+            }
+            .modal-tabs button.active {
+                color: #8ab4f8;
+            }
+            .nav-right .avatar .dropdown {
+                background: #2d2e30;
+                border-color: #3c3f41;
+            }
+            .nav-right .avatar .dropdown a {
+                color: #e8eaed;
+            }
+            .nav-right .avatar .dropdown a:hover {
+                background: #3c3f41;
+            }
+            .nav-right .avatar .dropdown a i {
+                color: #9aa0a6;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>🔢 Calculator</h2>
-        <input type="text" id="calcInput" placeholder="e.g. 2+2">
-        <button onclick="calculate()">Calculate</button>
-        <div class="result" id="result"></div>
+
+    <!-- ═══════════ TOP NAV ═══════════ -->
+    <nav class="top-nav">
+        <div class="nav-left">
+            <span class="menu-icon"><i class="fas fa-bars"></i></span>
+            <a class="logo" id="homeLink">
+                <span class="brand-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <i class="fas fa-key" style="font-size:16px; margin-left:-10px; color:#34a853;"></i>
+                </span>
+                <span>API <span class="store">Marketplace</span></span>
+            </a>
+        </div>
+
+        <div class="search-wrapper">
+            <span class="search-icon"><i class="fas fa-search"></i></span>
+            <input type="text" placeholder="Search for APIs &amp; tools" id="searchInput" />
+            <span class="mic-icon"><i class="fas fa-microphone"></i></span>
+        </div>
+
+        <div class="nav-right">
+            <button class="icon-btn"><i class="fas fa-bell"></i></button>
+            <button class="icon-btn"><i class="fas fa-shopping-cart"></i></button>
+            <div class="avatar" id="avatarBtn">
+                <span id="avatarText">G</span>
+                <div class="dropdown">
+                    <a id="loginBtn"><i class="fas fa-sign-in-alt"></i> Login</a>
+                    <a id="dashboardLink"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    <a id="libraryLink"><i class="fas fa-key"></i> My Keys</a>
+                    <a id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ═══════════ SECONDARY TABS ═══════════ -->
+    <div class="secondary-tabs">
+        <button class="tab active" data-tab="home">For you</button>
+        <button class="tab" data-tab="home">Top charts</button>
+        <button class="tab" data-tab="home">Categories</button>
+        <button class="tab" data-tab="home">Editors' Chats</button>
     </div>
 
+    <!-- ═══════════ MAIN CONTENT ═══════════ -->
+    <div class="main-container">
+
+        <!-- PAGE: HOME -->
+        <div id="page-home" class="page active">
+            <!-- Hero Banner -->
+            <div style="background: linear-gradient(135deg, #1a73e8, #0d47a1); border-radius: 16px; padding: 28px 32px; color: #fff; display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 16px;">
+                <div>
+                    <h2 style="font-size: 26px; font-weight: 500; margin-bottom: 4px;">🚀 Discover great APIs</h2>
+                    <p style="font-size: 15px; opacity: 0.9; font-weight: 300;">Build faster with ready-to-use keys</p>
+                </div>
+                <button style="background: rgba(255,255,255,0.2); backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 10px 24px; border-radius: 24px; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 8px; font-family: 'Roboto', sans-serif;" onclick="document.getElementById('searchInput').focus();">
+                    <i class="fas fa-rocket"></i> Explore now
+                </button>
+            </div>
+
+            <div class="section-title">🔥 Trending APIs</div>
+            <div class="section-sub">Top picks for developers</div>
+            <div id="apiGrid" class="app-grid">
+                <!-- Dynamically rendered by JavaScript -->
+            </div>
+
+            <div class="section-title" style="margin-top:32px;">📢 Sponsored</div>
+            <div class="section-sub">Suggested for You</div>
+            <div id="sponsoredGrid" class="app-grid">
+                <!-- Rendered by JavaScript (shows "Ad" badge) -->
+            </div>
+        </div>
+
+        <!-- PAGE: DETAIL -->
+        <div id="page-detail" class="page">
+            <div class="detail-container" id="detailContainer">
+                <button class="back-btn" onclick="navigateTo('home')"><i class="fas fa-arrow-left"></i> Back</button>
+                <div id="detailContent">
+                    <!-- Filled by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE: DASHBOARD -->
+        <div id="page-dashboard" class="page">
+            <div class="section-title">🛠️ Creator Dashboard</div>
+            <div class="section-sub">Manage your API listings</div>
+            <div class="dashboard-grid">
+                <div class="form-card">
+                    <h3>Add New API</h3>
+                    <form id="addApiForm">
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" id="apiName" placeholder="My Awesome API" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="apiDesc" rows="2" placeholder="Short description..." required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <input type="text" id="apiCategory" placeholder="e.g. Weather, Finance, AI" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Icon (Font Awesome class)</label>
+                            <input type="text" id="apiIcon" placeholder="fa-cloud-sun" value="fa-cloud-sun" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Color (hex or gradient)</label>
+                            <input type="text" id="apiColor" placeholder="#4285f4" value="#4285f4" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Pricing</label>
+                            <input type="text" id="apiPrice" placeholder="Free / $9/month / etc." value="Free" required />
+                        </div>
+                        <button type="submit" class="btn-primary" style="width:100%;">Publish API</button>
+                    </form>
+                </div>
+                <div>
+                    <h3 style="font-weight:500; margin-bottom:12px;">Your APIs</h3>
+                    <div id="myApisList" class="my-apis-list">
+                        <!-- Rendered by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE: LIBRARY (MY KEYS) -->
+        <div id="page-library" class="page">
+            <div class="section-title">🔑 My Keys</div>
+            <div class="section-sub">APIs you have access to</div>
+            <div id="myKeysList">
+                <!-- Rendered by JavaScript -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ═══════════ LOGIN MODAL ═══════════ -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-box">
+            <button class="close-modal" onclick="closeLoginModal()">&times;</button>
+            <h2 id="modalTitle">Welcome Back</h2>
+            <p class="sub" id="modalSub">Login to your account to request API keys</p>
+            <div class="modal-tabs">
+                <button class="active" data-form="login">Login</button>
+                <button data-form="register">Register</button>
+            </div>
+            <form id="loginForm" class="modal-form">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" placeholder="you@example.com" required />
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required />
+                </div>
+                <button type="submit" class="btn-primary">Login</button>
+            </form>
+            <form id="registerForm" class="modal-form" style="display:none;">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="regName" placeholder="John Doe" required />
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="regEmail" placeholder="you@example.com" required />
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="regPassword" placeholder="••••••••" required />
+                </div>
+                <button type="submit" class="btn-primary">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ═══════════ TOAST NOTIFICATION ═══════════ -->
+    <div id="toast" class="toast"></div>
+
+    <!-- ═══════════ FOOTER ═══════════ -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-links">
+                <a onclick="navigateTo('home')">Home</a>
+                <a href="#" onclick="navigateTo('dashboard')">Dashboard</a>
+                <a href="#" onclick="navigateTo('library')">My Keys</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+                <a href="#">Help</a>
+            </div>
+            <div class="footer-country">
+                <i class="fas fa-globe"></i>
+                <span>Global</span>
+                <span style="margin-left:8px;opacity:0.6;">&copy; 2026 API Marketplace</span>
+            </div>
+        </div>
+    </footer>
+
     <script>
-        const PRODUCT_ID = 8;   // Calculator product ID
-        const API_KEY = 'mp_ugN0ln8_6EUm0tkhBVcvkZ3pmV_8yPZKLvnsc_6-Nq0';
-        const BASE = 'https://api-marketplace-backend-1.onrender.com';
+        // ────────────────────────────────────────────────────────────
+        // 1. MOCK API CLIENT (localStorage backend)
+        // ────────────────────────────────────────────────────────────
 
-        async function calculate() {
-            const input = document.getElementById('calcInput');
-            let expr = input.value.trim();
-            if (!expr) {
-                expr = '2+2';   // fallback to show something on load
-                input.value = expr;
-            }
-
-            const res = document.getElementById('result');
-            res.textContent = '...';
-            res.className = 'result';
-
-            const url = `${BASE}/gateway/${PRODUCT_ID}/?calc=${encodeURIComponent(expr)}&api_key=${API_KEY}`;
-            console.log('Calling:', url);
-
-            try {
-                const resp = await fetch(url);
-                const data = await resp.json();
-                if (data.error) {
-                    res.textContent = data.error;
-                    res.classList.add('error');
-                } else if (data.result !== undefined) {
-                    res.textContent = data.result;
-                } else {
-                    res.textContent = 'Unexpected response';
-                    res.classList.add('error');
+        const ApiClient = {
+            _init() {
+                if (!localStorage.getItem('apiMarketplace_users')) {
+                    // Seed with a default user
+                    const users = [{
+                        id: 1,
+                        email: 'demo@example.com',
+                        password: 'demo123',
+                        name: 'Demo User',
+                        role: 'creator'
+                    }];
+                    localStorage.setItem('apiMarketplace_users', JSON.stringify(users));
                 }
-            } catch (e) {
-                res.textContent = 'Network error – check console';
-                res.classList.add('error');
-                console.error(e);
+                if (!localStorage.getItem('apiMarketplace_products')) {
+                    const products = [{
+                        id: 1,
+                        creatorId: 1,
+                        name: 'Weather API',
+                        description: 'Real-time global weather forecasts, historical data, and alerts.',
+                        category: 'Weather',
+                        icon: 'fa-cloud-sun',
+                        color: '#4285f4',
+                        price: 'Free',
+                        createdAt: Date.now() - 100000
+                    }, {
+                        id: 2,
+                        creatorId: 1,
+                        name: 'Translate Pro',
+                        description: 'AI-powered translation for 100+ languages with context detection.',
+                        category: 'Language',
+                        icon: 'fa-language',
+                        color: '#34a853',
+                        price: '$9/month',
+                        createdAt: Date.now() - 200000
+                    }, {
+                        id: 3,
+                        creatorId: 1,
+                        name: 'ImageForge AI',
+                        description: 'Generate stunning images from text prompts using diffusion models.',
+                        category: 'AI',
+                        icon: 'fa-image',
+                        color: '#fbbc04',
+                        price: '$15/month',
+                        createdAt: Date.now() - 300000
+                    }, {
+                        id: 4,
+                        creatorId: 1,
+                        name: 'SMS Gateway',
+                        description: 'Send and receive SMS messages globally with delivery tracking.',
+                        category: 'Communication',
+                        icon: 'fa-sms',
+                        color: '#ea4335',
+                        price: 'Free',
+                        createdAt: Date.now() - 400000
+                    }, {
+                        id: 5,
+                        creatorId: 1,
+                        name: 'PayFlow API',
+                        description: 'Unified payment integration (Stripe, PayPal, Crypto) for apps.',
+                        category: 'Finance',
+                        icon: 'fa-credit-card',
+                        color: '#ff6d00',
+                        price: '$29/month',
+                        createdAt: Date.now() - 500000
+                    }, {
+                        id: 6,
+                        creatorId: 1,
+                        name: 'Analytics Hub',
+                        description: 'Track user behavior, events, and generate real-time reports.',
+                        category: 'Analytics',
+                        icon: 'fa-chart-pie',
+                        color: '#7c4dff',
+                        price: 'Free',
+                        createdAt: Date.now() - 600000
+                    }];
+                    localStorage.setItem('apiMarketplace_products', JSON.stringify(products));
+                }
+                if (!localStorage.getItem('apiMarketplace_purchases')) {
+                    localStorage.setItem('apiMarketplace_purchases', JSON.stringify([]));
+                }
+                if (!localStorage.getItem('apiMarketplace_currentUser')) {
+                    localStorage.setItem('apiMarketplace_currentUser', JSON.stringify(null));
+                }
+            },
+
+            _getUsers() {
+                return JSON.parse(localStorage.getItem('apiMarketplace_users')) || [];
+            },
+            _saveUsers(users) {
+                localStorage.setItem('apiMarketplace_users', JSON.stringify(users));
+            },
+            _getProducts() {
+                return JSON.parse(localStorage.getItem('apiMarketplace_products')) || [];
+            },
+            _saveProducts(products) {
+                localStorage.setItem('apiMarketplace_products', JSON.stringify(products));
+            },
+            _getPurchases() {
+                return JSON.parse(localStorage.getItem('apiMarketplace_purchases')) || [];
+            },
+            _savePurchases(purchases) {
+                localStorage.setItem('apiMarketplace_purchases', JSON.stringify(purchases));
+            },
+            _getCurrentUser() {
+                return JSON.parse(localStorage.getItem('apiMarketplace_currentUser'));
+            },
+            _saveCurrentUser(user) {
+                localStorage.setItem('apiMarketplace_currentUser', JSON.stringify(user));
+            },
+
+            // ─── Auth ───
+            register(name, email, password) {
+                const users = this._getUsers();
+                if (users.find(u => u.email === email)) {
+                    return { success: false, error: 'Email already exists.' };
+                }
+                const newUser = {
+                    id: Date.now() + Math.floor(Math.random() * 1000),
+                    name,
+                    email,
+                    password, // plain for mock
+                    role: 'consumer'
+                };
+                users.push(newUser);
+                this._saveUsers(users);
+                return { success: true, user: newUser };
+            },
+
+            login(email, password) {
+                const users = this._getUsers();
+                const user = users.find(u => u.email === email && u.password === password);
+                if (!user) {
+                    return { success: false, error: 'Invalid email or password.' };
+                }
+                this._saveCurrentUser(user);
+                return { success: true, user };
+            },
+
+            logout() {
+                this._saveCurrentUser(null);
+            },
+
+            getMe() {
+                return this._getCurrentUser();
+            },
+
+            // ─── Products ───
+            getAllProducts() {
+                return this._getProducts();
+            },
+
+            getProduct(id) {
+                return this._getProducts().find(p => p.id === id);
+            },
+
+            createProduct(creatorId, name, description, category, icon, color, price) {
+                const products = this._getProducts();
+                const newProduct = {
+                    id: Date.now() + Math.floor(Math.random() * 1000),
+                    creatorId,
+                    name,
+                    description,
+                    category,
+                    icon,
+                    color,
+                    price: price || 'Free',
+                    createdAt: Date.now()
+                };
+                products.push(newProduct);
+                this._saveProducts(products);
+                return newProduct;
+            },
+
+            deleteProduct(productId, creatorId) {
+                let products = this._getProducts();
+                const product = products.find(p => p.id === productId);
+                if (!product) return { success: false, error: 'Not found.' };
+                if (product.creatorId !== creatorId) return { success: false, error: 'Not yours.' };
+                products = products.filter(p => p.id !== productId);
+                this._saveProducts(products);
+                return { success: true };
+            },
+
+            getMyProducts(creatorId) {
+                return this._getProducts().filter(p => p.creatorId === creatorId);
+            },
+
+            // ─── Purchases / Keys ───
+            requestKey(consumerId, productId) {
+                const products = this._getProducts();
+                const product = products.find(p => p.id === productId);
+                if (!product) return { success: false, error: 'Product not found.' };
+
+                const purchases = this._getPurchases();
+                // Check if already has key
+                const existing = purchases.find(p => p.consumerId === consumerId && p.productId === productId);
+                if (existing) {
+                    return { success: true, key: existing.key };
+                }
+
+                // Generate a mock key
+                const key = 'api_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 8);
+                const purchase = {
+                    id: Date.now() + Math.floor(Math.random() * 1000),
+                    consumerId,
+                    productId,
+                    key,
+                    status: 'active',
+                    purchasedAt: Date.now()
+                };
+                purchases.push(purchase);
+                this._savePurchases(purchases);
+                return { success: true, key };
+            },
+
+            getMyKeys(consumerId) {
+                const purchases = this._getPurchases();
+                const myPurchases = purchases.filter(p => p.consumerId === consumerId);
+                const products = this._getProducts();
+                return myPurchases.map(p => {
+                    const product = products.find(pr => pr.id === p.productId);
+                    return { ...p, product };
+                });
+            }
+        };
+
+        // ────────────────────────────────────────────────────────────
+        // 2. UI CONTROLLER
+        // ────────────────────────────────────────────────────────────
+
+        // Init mock DB
+        ApiClient._init();
+
+        let currentPage = 'home';
+        let selectedProductId = null;
+
+        function showToast(message, duration = 3000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.remove('active');
+        }
+
+        function openLoginModal() {
+            document.getElementById('loginModal').classList.add('active');
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+            document.querySelectorAll('.modal-tabs button').forEach(b => b.classList.remove('active'));
+            document.querySelector('.modal-tabs button[data-form="login"]').classList.add('active');
+            document.getElementById('modalTitle').textContent = 'Welcome Back';
+            document.getElementById('modalSub').textContent = 'Login to your account to request API keys';
+        }
+
+        function navigateTo(page, data) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            const target = document.getElementById('page-' + page);
+            if (target) target.classList.add('active');
+            currentPage = page;
+
+            if (page === 'home') {
+                renderHome();
+            } else if (page === 'dashboard') {
+                renderDashboard();
+            } else if (page === 'library') {
+                renderLibrary();
+            } else if (page === 'detail' && data) {
+                renderDetail(data);
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ─── RENDER HOME ───
+        function renderHome() {
+            const products = ApiClient.getAllProducts();
+            const grid = document.getElementById('apiGrid');
+            const sponsored = document.getElementById('sponsoredGrid');
+
+            // Main grid
+            grid.innerHTML = products.map(p => `
+                <div class="app-card" onclick="navigateTo('detail', ${p.id})">
+                    <div class="app-icon" style="background:${p.color};"><i class="fas ${p.icon}"></i></div>
+                    <div class="app-name">${p.name}</div>
+                    <div class="app-desc">${p.description.substring(0, 50)}${p.description.length > 50 ? '...' : ''}</div>
+                    <div class="app-meta">
+                        <span>${p.category}</span>
+                        <span class="badge">${p.price}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            // Sponsored (first 3 as ads)
+            const sponsoredProducts = products.slice(0, 3);
+            sponsored.innerHTML = sponsoredProducts.map(p => `
+                <div class="app-card" onclick="navigateTo('detail', ${p.id})">
+                    <div class="ad-badge">Ad</div>
+                    <div class="app-icon" style="background:${p.color};"><i class="fas ${p.icon}"></i></div>
+                    <div class="app-name">${p.name}</div>
+                    <div class="app-desc">${p.description.substring(0, 40)}...</div>
+                    <div class="app-meta">
+                        <span>${p.category}</span>
+                        <span class="badge">${p.price}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ─── RENDER DETAIL ───
+        function renderDetail(productId) {
+            const product = ApiClient.getProduct(productId);
+            if (!product) {
+                document.getElementById('detailContent').innerHTML = '<p>Product not found.</p>';
+                return;
+            }
+            const user = ApiClient.getMe();
+            const container = document.getElementById('detailContent');
+            container.innerHTML = `
+                <div class="detail-header">
+                    <div class="big-icon" style="background:${product.color};"><i class="fas ${product.icon}"></i></div>
+                    <div class="info">
+                        <h2>${product.name}</h2>
+                        <div class="category">${product.category} • ${product.price}</div>
+                        <div class="price">${product.price}</div>
+                    </div>
+                </div>
+                <div class="detail-body">
+                    <p>${product.description}</p>
+                    <p><strong>Created by:</strong> User ${product.creatorId}</p>
+                    <p><a href="#" class="doc-link" onclick="showToast('📚 Documentation link would open here (mock)'); return false;"><i class="fas fa-book"></i> View Documentation</a></p>
+                    <button class="request-btn" id="requestKeyBtn" ${!user ? 'style="background:#5f6368;"' : ''}>
+                        ${user ? '🔑 Request API Key' : '🔒 Login to Request'}
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('requestKeyBtn').addEventListener('click', function() {
+                const currentUser = ApiClient.getMe();
+                if (!currentUser) {
+                    showToast('Please login first.');
+                    openLoginModal();
+                    return;
+                }
+                const result = ApiClient.requestKey(currentUser.id, productId);
+                if (result.success) {
+                    showToast(`✅ Your API Key: ${result.key}`, 5000);
+                } else {
+                    showToast('❌ ' + result.error);
+                }
+            });
+        }
+
+        // ─── RENDER DASHBOARD ───
+        function renderDashboard() {
+            const user = ApiClient.getMe();
+            if (!user) {
+                document.getElementById('myApisList').innerHTML = `<p style="color:#5f6368;">Please login to manage APIs.</p>`;
+                return;
+            }
+            const myProducts = ApiClient.getMyProducts(user.id);
+            const list = document.getElementById('myApisList');
+            if (myProducts.length === 0) {
+                list.innerHTML = `<p style="color:#5f6368;">You haven't published any APIs yet.</p>`;
+                return;
+            }
+            list.innerHTML = myProducts.map(p => `
+                <div class="my-api-item">
+                    <div class="info">
+                        <div class="name">${p.name}</div>
+                        <div class="desc">${p.category} • ${p.price}</div>
+                    </div>
+                    <button class="btn-danger" onclick="deleteMyProduct(${p.id})"><i class="fas fa-trash"></i> Delete</button>
+                </div>
+            `).join('');
+        }
+
+        function deleteMyProduct(productId) {
+            const user = ApiClient.getMe();
+            if (!user) return showToast('Please login.');
+            if (!confirm('Delete this API listing?')) return;
+            const result = ApiClient.deleteProduct(productId, user.id);
+            if (result.success) {
+                showToast('✅ API deleted.');
+                renderDashboard();
+                renderHome();
+            } else {
+                showToast('❌ ' + result.error);
             }
         }
 
-        // Auto-calculate on page load (shows default 2+2 result)
-        window.onload = calculate;
+        // ─── RENDER LIBRARY ───
+        function renderLibrary() {
+            const user = ApiClient.getMe();
+            const container = document.getElementById('myKeysList');
+            if (!user) {
+                container.innerHTML = `<p style="color:#5f6368;">Please login to see your API keys.</p>`;
+                return;
+            }
+            const myKeys = ApiClient.getMyKeys(user.id);
+            if (myKeys.length === 0) {
+                container.innerHTML = `<p style="color:#5f6368;">You haven't requested any API keys yet. Browse APIs and request one!</p>`;
+                return;
+            }
+            container.innerHTML = myKeys.map(item => `
+                <div class="key-item">
+                    <div>
+                        <strong>${item.product ? item.product.name : 'Unknown API'}</strong>
+                        <span style="color:#5f6368; font-size:13px; margin-left:8px;">${item.product ? item.product.category : ''}</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span class="key-value">${item.key}</span>
+                        <button class="copy-btn" onclick="copyToClipboard('${item.key}')"><i class="fas fa-copy"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('📋 Copied to clipboard!');
+            }).catch(() => {
+                // Fallback
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                ta.remove();
+                showToast('📋 Copied to clipboard!');
+            });
+        }
+
+        // ─── AUTH UI HANDLERS ───
+        function updateUIForUser() {
+            const user = ApiClient.getMe();
+            const avatarText = document.getElementById('avatarText');
+            const loginBtn = document.getElementById('loginBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const dashboardLink = document.getElementById('dashboardLink');
+            const libraryLink = document.getElementById('libraryLink');
+
+            if (user) {
+                avatarText.textContent = user.name.charAt(0).toUpperCase();
+                loginBtn.style.display = 'none';
+                logoutBtn.style.display = 'block';
+                dashboardLink.style.display = 'block';
+                libraryLink.style.display = 'block';
+            } else {
+                avatarText.textContent = 'G';
+                loginBtn.style.display = 'block';
+                logoutBtn.style.display = 'none';
+                dashboardLink.style.display = 'none';
+                libraryLink.style.display = 'none';
+            }
+            // Refresh current page
+            if (currentPage === 'home') renderHome();
+            else if (currentPage === 'dashboard') renderDashboard();
+            else if (currentPage === 'library') renderLibrary();
+        }
+
+        // ─── EVENT BINDINGS ───
+
+        // Avatar dropdown toggle
+        document.getElementById('avatarBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            this.classList.toggle('active');
+        });
+        document.addEventListener('click', function() {
+            document.getElementById('avatarBtn').classList.remove('active');
+        });
+
+        // Home link
+        document.getElementById('homeLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            navigateTo('home');
+        });
+
+        // Login modal trigger
+        document.getElementById('loginBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('avatarBtn').classList.remove('active');
+            openLoginModal();
+        });
+
+        // Dashboard link
+        document.getElementById('dashboardLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('avatarBtn').classList.remove('active');
+            const user = ApiClient.getMe();
+            if (!user) { showToast('Please login first.'); openLoginModal(); return; }
+            navigateTo('dashboard');
+        });
+
+        // Library link
+        document.getElementById('libraryLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('avatarBtn').classList.remove('active');
+            const user = ApiClient.getMe();
+            if (!user) { showToast('Please login first.'); openLoginModal(); return; }
+            navigateTo('library');
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            ApiClient.logout();
+            updateUIForUser();
+            showToast('👋 Logged out.');
+            navigateTo('home');
+            document.getElementById('avatarBtn').classList.remove('active');
+        });
+
+        // Modal tabs
+        document.querySelectorAll('.modal-tabs button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.modal-tabs button').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const form = this.dataset.form;
+                if (form === 'login') {
+                    document.getElementById('loginForm').style.display = 'block';
+                    document.getElementById('registerForm').style.display = 'none';
+                    document.getElementById('modalTitle').textContent = 'Welcome Back';
+                    document.getElementById('modalSub').textContent = 'Login to your account to request API keys';
+                } else {
+                    document.getElementById('loginForm').style.display = 'none';
+                    document.getElementById('registerForm').style.display = 'block';
+                    document.getElementById('modalTitle').textContent = 'Create Account';
+                    document.getElementById('modalSub').textContent = 'Join the API Marketplace as a creator or consumer';
+                }
+            });
+        });
+
+        // Login form submit
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const result = ApiClient.login(email, password);
+            if (result.success) {
+                closeLoginModal();
+                updateUIForUser();
+                showToast(`👋 Welcome ${result.user.name}!`);
+                navigateTo('home');
+            } else {
+                showToast('❌ ' + result.error);
+            }
+        });
+
+        // Register form submit
+        document.getElementById('registerForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const result = ApiClient.register(name, email, password);
+            if (result.success) {
+                // Auto-login
+                ApiClient.login(email, password);
+                closeLoginModal();
+                updateUIForUser();
+                showToast(`🎉 Welcome ${name}! You're now registered.`);
+                navigateTo('home');
+            } else {
+                showToast('❌ ' + result.error);
+            }
+        });
+
+        // Add API form (Dashboard)
+        document.getElementById('addApiForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const user = ApiClient.getMe();
+            if (!user) { showToast('Please login first.'); openLoginModal(); return; }
+
+            const name = document.getElementById('apiName').value.trim();
+            const description = document.getElementById('apiDesc').value.trim();
+            const category = document.getElementById('apiCategory').value.trim();
+            const icon = document.getElementById('apiIcon').value.trim() || 'fa-cloud-sun';
+            const color = document.getElementById('apiColor').value.trim() || '#4285f4';
+            const price = document.getElementById('apiPrice').value.trim() || 'Free';
+
+            if (!name || !description || !category) {
+                showToast('Please fill in all required fields.');
+                return;
+            }
+
+            ApiClient.createProduct(user.id, name, description, category, icon, color, price);
+            showToast('✅ API published successfully!');
+            document.getElementById('addApiForm').reset();
+            document.getElementById('apiIcon').value = 'fa-cloud-sun';
+            document.getElementById('apiColor').value = '#4285f4';
+            document.getElementById('apiPrice').value = 'Free';
+            renderDashboard();
+            renderHome();
+        });
+
+        // Search (simple filter)
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            const cards = document.querySelectorAll('#apiGrid .app-card');
+            cards.forEach(card => {
+                const name = card.querySelector('.app-name')?.textContent?.toLowerCase() || '';
+                const desc = card.querySelector('.app-desc')?.textContent?.toLowerCase() || '';
+                const match = name.includes(query) || desc.includes(query);
+                card.style.display = match ? 'flex' : 'none';
+            });
+        });
+
+        // Secondary tabs (just UI feedback)
+        document.querySelectorAll('.secondary-tabs .tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.secondary-tabs .tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                // If "For you" or others, just go home
+                if (this.dataset.tab === 'home') {
+                    navigateTo('home');
+                }
+            });
+        });
+
+        // ─── INIT ───
+        updateUIForUser();
+        navigateTo('home');
     </script>
 </body>
 </html>
